@@ -1,0 +1,75 @@
+import json
+import datetime
+
+def lambda_handler(event, context):
+    http_method = event.get('requestContext', {}).get('http', {}).get('method', 'GET')
+    
+    if http_method == 'GET':
+        current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'text/html'},
+            'body': f'''
+            <html>
+                <head>
+                    <title>My Simple App</title>
+                    <style>
+                        body {{ font-family: Arial; margin: 40px; background: #f5f5f5; }}
+                        .container {{ max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }}
+                        input, button {{ padding: 10px; margin: 5px; }}
+                        input {{ width: 300px; }}
+                        button {{ background: #0073bb; color: white; border: none; cursor: pointer; }}
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h1>Welcome to My Lambda Web App! 🚀</h1>
+                        <p><strong>Current time:</strong> {current_time}</p>
+                        <p>This is an enhanced version with better styling!</p>
+                        
+                        <form method="POST">
+                            <h3>Send a Message:</h3>
+                            <input type="text" name="message" placeholder="Type something here">
+                            <button type="submit">Send Message</button>
+                        </form>
+                        
+                        <hr>
+                        <p><small>Powered by AWS Lambda</small></p>
+                    </div>
+                </body>
+            </html>
+            '''
+        }
+    
+    elif http_method == 'POST':
+        body = event.get('body', 'No message received')
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'text/html'},
+            'body': f'''
+            <html>
+                <head>
+                    <title>Response Received</title>
+                    <style>
+                        body {{ font-family: Arial; margin: 40px; background: #f5f5f5; }}
+                        .container {{ max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }}
+                        .success {{ color: green; font-weight: bold; }}
+                        a {{ color: #0073bb; text-decoration: none; }}
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h2 class="success">✅ Thank You!</h2>
+                        <p>Your message was received:</p>
+                        <div style="background: #f0f0f0; padding: 15px; border-left: 4px solid #0073bb;">
+                            <strong>{body}</strong>
+                        </div>
+                        <br>
+                        <a href="/">← Go Back to Home</a>
+                    </div>
+                </body>
+            </html>
+            '''
+        }
